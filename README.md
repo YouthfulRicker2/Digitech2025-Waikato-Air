@@ -19,18 +19,23 @@ To the best of my ability I have followed pep8 and pep257 styling conventions fo
         [x] Name,
         [x] Age,
     [x] Route,
-[] Have persistent storage of client data;
-    [] Read from CSV file,
-    [] Append to CSV file,
+[x] Have persistent storage of client data;
+    [x] Read from CSV file,
+    [x] Append to CSV file,
 [x] Calculate a discount (from age, seat scarcity, and flight date),
 [x] Output of a copy-pastable email for the client,
-[] Consistent replay and exit for multi-adding or detail confirmation.
+[x] Consistent replay and exit for multi-adding or detail confirmation.
 
 #### Code Requirements
 
 [x] Read from separate python files,
 [x] Utilize classes,
 [x] Handle input errors and prevent mistakes.
+
+#### Post-Stakeholder
+
+##### Stakeholder 1: Padre
+[x] Specify what type of discount the client is getting.
 
 ### Solution Design
 

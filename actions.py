@@ -1,6 +1,8 @@
 """This file contains the definitions and action entities of the program."""
 
 import datetime
+import ast
+import csv
 from typing import List, Dict
 import data
 
@@ -21,7 +23,7 @@ class EmailGenerator:
         )
         if booking.discount > 0:
             percentage = (booking.discount / booking.flight.base_fare) * 100
-            email += f"Discount: {percentage:.0f}%\n"
+            email += f"Discount Applied: {percentage:.0f}% ({booking.discount_type})\n"
         email += f"Final Fare: ${booking.final_fare:.2f}\n\n"
         email += (
             "We look forward to flying you safely and comfortably.\n\n"
@@ -74,24 +76,141 @@ def get_valid_seat_count(prompt: str) -> int:
 def apply_discount(flight: data.Flight, date_str: str, age: int) -> (float, str): # type: ignore
     """Return the reduction quantity from the final price with age, date, and seat considerations."""
     try:
+        discount_status = False
         flight_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         today = datetime.date.today()
         days_until_flight = (flight_date - today).days
         discount_percentage_decimal = 0
+        child = False
+        senior = False
+        urgent = False
+        urgent_seat_scarcity = False
+        discount_status = False
+        discount_text = ""
 
         if age <= 16:
-            discount_percentage_decimal = discount_percentage_decimal + 0.15
+            discount_percentage_decimal = discount_percentage_decimal + 0.20
+            child = True
+            discount_status = True
         elif age >= 65:
             discount_percentage_decimal = discount_percentage_decimal + 0.25
+            senior = True
+            discount_status = True
         if days_until_flight < 20 or flight.seats_available < 50:
             discount_percentage_decimal = discount_percentage_decimal + 0.20
+            urgent_seat_scarcity = True
+            discount_status = True
         elif days_until_flight < 50:
             discount_percentage_decimal = discount_percentage_decimal + 0.10
+            urgent = True
+            discount_status = True
 
-        return flight.base_fare * discount_percentage_decimal
+        if not discount_status:
+            return 0.0, ""
+
+        if child and urgent_seat_scarcity:
+            discount_text = "Child + Urgency/Seat Scarcity Discount"
+        elif child and urgent:
+            discount_text = "Child + Urgency Discount"
+        elif senior and urgent_seat_scarcity:
+            discount_text = "Senior + Urgency/Seat Scarcity Discount"
+        elif senior and urgent:
+            discount_text = "Senior + Urgency Discount"
+        elif urgent_seat_scarcity:
+            discount_text = "Urgency/Seat Scarcity Discount"
+        elif urgent:
+            discount_text = "Urgency Discount"
+        elif child:
+            discount_text = "Child Discount"
+        elif senior:
+            discount_text = "Senior Discount"
+
+        return flight.base_fare * discount_percentage_decimal, discount_text
     except ValueError:
         print("Please use YYYY-MM-DD.")
         return 0.0, ""
+
+
+def save_bookings_to_csv(filename: str, booking_data: List[Dict]):
+    """Place the booking records in a CSV file."""
+    try:
+        file_exists = False
+        try:
+            with open(filename, mode="r"):
+                file_exists = True
+        except FileNotFoundError:
+            file_exists = False
+
+        with open(filename, mode="a", newline="") as csvfile:
+            fieldnames = [
+                "name", "age", "date", "departure", "destination",
+                "flight_number", "base_fare", "discount",
+                "discount_type", "final_fare"
+            ]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            if not file_exists:
+                writer.writeheader()
+            for booking in booking_data:
+                writer.writerow(booking)
+        print(f"\nBooking appended to {filename}.")
+    except IOError as e:
+        print(f"An error occurred while saving bookings: {e}")
+
+
+def load_bookings_from_csv(filename: str):
+    """Read and print all bookings from the CSV file without formatting."""
+    try:
+        with open(filename, mode="r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            print("\n--- All Bookings ---")
+            for row in reader:
+                print(row)
+    except FileNotFoundError:
+        print("No bookings found.")
+    except IOError as e:
+        print(f"An error occurred while reading the bookings: {e}")
+
+
+def load_booking_by_name(filename: str):
+    """Load booking info from the CSV file by individual."""
+    name = input("Please enter the traveller's full name to search: ").strip().title()
+
+    try:
+        with open(filename, mode="r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            found = False
+            for row in reader:
+                if row["name"] == name:
+                    found = True
+                    discount = ast.literal_eval(row['discount'])
+                    print(f"\n- Booking for {row['name']} -")
+                    print(f"Age: {row['age']}")
+                    print(f"Date of Flight: {row['date']}")
+                    print(f"Route: {row['departure']} → {row['destination']}")
+                    print(f"Flight Number: {row['flight_number']}")
+                    print(f"Original Fare: ${float(row['base_fare']):.2f}")
+                    if float(tuple(row['discount'])[1]) > 0:
+                        print(f"Discount: ${discount[0]:.2f} ({discount[1]})")
+                    print(f"Final Fare: ${float(row['final_fare']):.2f}")
+
+                    # Reconstruct objects for email generation
+                    traveller = data.Traveller(row["name"], int(row["age"]), row["date"])
+                    flight = data.Flight(
+                        row["departure"], row["destination"],
+                        float(row["base_fare"]), 0  # seats_available not needed here
+                    )
+                    booking = data.Booking(traveller, flight, discount)
+                    email, subject = EmailGenerator.generate_email(booking)
+
+                    print("\n--- Email Preview ---")
+                    print(subject)
+                    print(email)
+            if not found:
+                print(f"No bookings found for {name}.")
+    except FileNotFoundError:
+        print("No bookings file found.")
+    except IOError as e:
+        print(f"An error occurred while reading the bookings: {e}")
 
 
 def main():
@@ -140,7 +259,8 @@ def main():
     })
 
     print("\n--- Email Output ---\n")
-    print(email)
+    print(email, "\n")
+    save_bookings_to_csv("waikato_air_bookings.csv", bookings)
 
 
 ROUTES = {

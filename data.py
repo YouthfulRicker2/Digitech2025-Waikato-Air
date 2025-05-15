@@ -36,5 +36,6 @@ class Booking:
         """Combine the other classes and apply discount for email purposes."""
         self.traveller = traveller
         self.flight = flight
-        self.discount = discount
-        self.final_fare = flight.base_fare - discount
+        self.discount = discount[0]
+        self.discount_type = discount[1]
+        self.final_fare = flight.base_fare - discount[0]
