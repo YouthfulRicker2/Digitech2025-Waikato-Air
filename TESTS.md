@@ -57,9 +57,9 @@ Expected Cost Output: $100 (Base Rotorua-Hamilton Cost)
 
 ## Testing
 
-iteration1 = Commit ID: d12d69a658eca7a1fd86701c82d5b5180d8b2085
-iteration2 = Commit ID: e1cd4976e33542850a747a3c35224ac6446e0102
-iteration3 = Commit ID: 15d0dcaf02b738591ca4814b99d8b4e6ca036a57
+iteration1 = Commit ID: [d12d69a658eca7a1fd86701c82d5b5180d8b2085](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/c55bafeb8708a22e7767cdc4f5a81295a45ecf8e)
+iteration2 = Commit ID: [e1cd4976e33542850a747a3c35224ac6446e0102](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/a8f1d94b3444efba5e8c4bb9dfedb3f2d96d4d4d)
+iteration3 = Commit ID: [15d0dcaf02b738591ca4814b99d8b4e6ca036a57](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/7fb59f774cb57bfe66500f9f9b40039e68a1fc4e)
 
 Success indicates that the iteration passed the test,
 N/A indicates that the feature wasn't implemented in that iteration.
