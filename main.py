@@ -12,6 +12,7 @@ if __name__ == "__main__":
         elif choice == "view":
             actions.load_booking_by_name("waikato_air_bookings.csv")
         elif choice == "exit":
+            print("\nThank you for using me!\n")
             break
         else:
             print("Please type 'book', 'view', or 'exit'.")

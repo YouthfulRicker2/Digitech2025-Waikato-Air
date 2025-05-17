@@ -5,6 +5,8 @@ import ast
 import csv
 from typing import List, Dict
 import data
+import webbrowser
+import urllib.parse
 
 
 class EmailGenerator:
@@ -13,8 +15,10 @@ class EmailGenerator:
     @staticmethod
     def generate_email(booking: data.Booking) -> str:
         """Compiles the body and subject of the email and returns it."""
-        email = (
-            f"Subject: Your Waikato Air Flight Details – {booking.flight.flight_number}\n\n"
+        email_subject = (
+            f"Your Waikato Air Flight Details – {booking.flight.flight_number}\n\n"
+        )
+        email_body = (
             f"Dear {booking.traveller.name},\n\n"
             "Thank you for booking your flight with Waikato Air. Here are your flight details:\n\n"
             f"Flight Number: {booking.flight.flight_number}\n"
@@ -23,13 +27,13 @@ class EmailGenerator:
         )
         if booking.discount > 0:
             percentage = (booking.discount / booking.flight.base_fare) * 100
-            email += f"Discount Applied: {percentage:.0f}% ({booking.discount_type})\n"
-        email += f"Final Fare: ${booking.final_fare:.2f}\n\n"
-        email += (
+            email_body += f"Discount Applied: {percentage:.0f}% ({booking.discount_type})\n"
+        email_body += f"Final Fare: ${booking.final_fare:.2f}\n\n"
+        email_body += (
             "We look forward to flying you safely and comfortably.\n\n"
             "Kind regards,\nWaikato Air Customer Services"
         )
-        return email
+        return email_body, email_subject
 
 
 def get_valid_city(prompt: str, valid_cities: List[str]) -> str:
@@ -157,20 +161,6 @@ def save_bookings_to_csv(filename: str, booking_data: List[Dict]):
         print(f"An error occurred while saving bookings: {e}")
 
 
-def load_bookings_from_csv(filename: str):
-    """Read and print all bookings from the CSV file without formatting."""
-    try:
-        with open(filename, mode="r") as csvfile:
-            reader = csv.DictReader(csvfile)
-            print("\n--- All Bookings ---")
-            for row in reader:
-                print(row)
-    except FileNotFoundError:
-        print("No bookings found.")
-    except IOError as e:
-        print(f"An error occurred while reading the bookings: {e}")
-
-
 def load_booking_by_name(filename: str):
     """Load booking info from the CSV file by individual."""
     name = input("Please enter the traveller's full name to search: ").strip().title()
@@ -213,6 +203,23 @@ def load_booking_by_name(filename: str):
         print(f"An error occurred while reading the bookings: {e}")
 
 
+def send_email(subject, body):
+    """Create and open a 'mailto:' link to immediately send the email."""
+    while True:
+        email_now = input("Would you like to email the client now? (yes/no): ")
+        if email_now.lower() == "yes":
+            subject_encoded = urllib.parse.quote(subject)
+            body_encoded = urllib.parse.quote(body)
+            mailto_link = f"mailto:?subject={subject_encoded}&body={body_encoded}"
+            webbrowser.open(mailto_link)
+            break
+        elif email_now.lower() == "no":
+            print("\nAlrighty!")
+            break
+        else:
+            print("\nPlease enter 'yes' or 'no'.")
+
+
 def main():
     """Retrieve client info and compiles previous definitions."""
     name = input("\nEnter traveller's full name: ").strip().title()
@@ -243,7 +250,7 @@ def main():
     discount = apply_discount(flight, date_of_flight, traveller.age)
 
     booking = data.Booking(traveller, flight, discount)
-    email = EmailGenerator.generate_email(booking)
+    email, email_subject = EmailGenerator.generate_email(booking)
 
     # Store booking
     bookings.append({
@@ -259,8 +266,11 @@ def main():
     })
 
     print("\n--- Email Output ---\n")
+    print(email_subject)
     print(email, "\n")
     save_bookings_to_csv("waikato_air_bookings.csv", bookings)
+
+    send_email(email_subject, email)
 
 
 ROUTES = {
