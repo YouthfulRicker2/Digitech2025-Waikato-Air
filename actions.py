@@ -195,6 +195,8 @@ def load_booking_by_name(filename: str):
                     print("\n--- Email Preview ---")
                     print(subject)
                     print(email)
+                    send_email(subject, email)
+                    
             if not found:
                 print(f"No bookings found for {name}.")
     except FileNotFoundError:
