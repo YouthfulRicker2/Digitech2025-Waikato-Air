@@ -52,6 +52,10 @@ I created a flowchart to pre-configure the structure of my program before I bega
 
 The program's end configuration does differ in a few ways from the flowchart, primarily due to programming conventions and unplanned feature additions.
 
+## Testing
+
+All my testing information is contained in [TESTS.md](TESTS.md).
+
 ## How it Works
 
 First, the program asks you if you want to create a booking, view a booking, or exit the program. 
@@ -59,6 +63,8 @@ First, the program asks you if you want to create a booking, view a booking, or 
 ### Create a Booking
 
 The program will call upon the [actions.py](actions.py) file to run the `main()` function. This function will ask the user for input such as the age of the client, the source and destination of the trip, etc. Each of these inputs are placed into a loop by another related function, e.g. `get_valid_seat_count`, and the loop is only broken when a valid input is provided, creating in-built error-catching. For the destination/departure questions, the program, thanks to a modular display of the 3 cities, removes the city selected for departure from the print statement when prompting for the destination to prevent the user from entering the same city again. Even if they did it would make sure they tried again though.
+
+I've kept the original cost, original seat count, and discount values static as in the context of the program, these are things that would be institutionally predetermined and wouldn't be prone to change at the end of the line. It would be unnecessary and allowing these to be user-determined would potentially create more errors and in-line problems down the road.
 
 After all the information is taken, the program compiles the information into three classes from [data.py](data.py); Traveller, which contains the name and age of the client as well as the date of the flight, Flight, which generates a flight number for the booking and holds the route, fare, and available seat count, and finally, Booking, which takes the previous two classes for it's own, as well as calculating the final fare by holding the discount data.
 
@@ -74,7 +80,9 @@ Simply simple. Simpledeedoo da.
 
 The program now will run the `load_booking_by_name()` function in [actions.py](actions.py). 
 
-This function will first ask the user the name of the person who's booking they want to access. The program will open the csv file in 'read' mode, and it parses the file contents to search for the name provided.
+First, the function calls the csv file, parses it for it's name column values, and lists them to the user to display the existing names within the file.
+
+This function will then ask the user the name of the person who's booking they want to access. The program will open the csv file in 'read' mode, and it parses the file contents to search for the name provided.
 
 After it finds the user's row in the csv file, it takes the data, prints it into a summary, and it recreates the class structure with the variables from the csv, and then it recreates the email and displays it. 
 

@@ -52,9 +52,33 @@ def get_valid_date(prompt: str) -> str:
         date_input = input(prompt).strip()
         try:
             datetime.datetime.strptime(date_input, "%Y-%m-%d")
-            return date_input
+            input_date = datetime.datetime.strptime(date_input, "%Y-%m-%d").date()
+            if input_date > datetime.date.today():
+                return date_input
+            else:
+                print("Too late, please enter a date beyond today.")
         except ValueError:
             print("Please use YYYY-MM-DD.")
+
+
+def get_valid_name(prompt: str) -> int:
+    """Make sure the user's name parts are both concise and non-numerical."""
+    while True:
+        name = input(prompt).strip().title()
+        if len(name) > 25:
+            print("Name must be 25 characters or fewer.")
+            continue
+        if not name.replace(" ", "").isalpha():
+            print("Please enter a valid name.")
+            continue
+        return name
+    
+
+def get_full_name() -> str:
+    """Prompt for and return a full name, combining validated first and last names."""
+    first_name = get_valid_name("Enter traveller's first/middle name (max 25 characters): ")
+    last_name = get_valid_name("Enter traveller's last name (max 25 characters): ")
+    return f"{first_name} {last_name}"
 
 
 def get_valid_age(prompt: str) -> int:
@@ -71,7 +95,7 @@ def get_valid_seat_count(prompt: str) -> int:
     """Make sure overbooking is a thing of the past, and prevents float entries."""
     while True:
         seat_input = input(prompt).strip()
-        if seat_input.isdigit() and int(seat_input) > 0 and int(seat_input) < 200:
+        if seat_input.isdigit() and int(seat_input) > 0 and int(seat_input) < 171:
             return int(seat_input)
         else:
             print("Please re-enter the number of remaining seats.")
@@ -163,9 +187,22 @@ def save_bookings_to_csv(filename: str, booking_data: List[Dict]):
 
 def load_booking_by_name(filename: str):
     """Load booking info from the CSV file by individual."""
-    name = input("Please enter the traveller's full name to search: ").strip().title()
-
     try:
+        with open(filename, mode="r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            names = [row["name"] for row in reader]
+            
+            if not names:
+                print("No bookings available.")
+                return
+
+            # List existing names
+            print("Existing traveller names:")
+            for name in sorted(set(names)):
+                print(f" - {name}")
+
+        name = input("Please enter the traveller's full name to search: ").strip().title()
+
         with open(filename, mode="r") as csvfile:
             reader = csv.DictReader(csvfile)
             found = False
@@ -223,13 +260,10 @@ def send_email(subject, body):
 
 
 def main():
-    """Retrieve client info and compiles previous definitions."""
-    name = input("\nEnter traveller's full name: ").strip().title()
-    while not name.replace(" ", "").isalpha():
-        print("Please enter the Traveller's name correctly.")
-        name = input("Enter traveller's full name: ").strip().title()
+    """Retrieve client info and compile previous definitions."""
+    name = get_full_name()
 
-    age = get_valid_age("Enter traveller's age: ")
+    age = get_valid_age("Enter traveller's age (max 160): ")
     date_of_flight = get_valid_date("Please enter your date of flight (YYYY-MM-DD): ")
 
     valid_cities = ["Hamilton", "Rotorua", "Auckland"]
@@ -245,7 +279,7 @@ def main():
         return
 
     base_fare = ROUTES[route]
-    seats_available = get_valid_seat_count("How many seats are left on this flight?: ")
+    seats_available = get_valid_seat_count("How many seats are left on this flight? (max 171): ")
 
     traveller = data.Traveller(name, age, date_of_flight)
     flight = data.Flight(departure, destination, base_fare, seats_available)
