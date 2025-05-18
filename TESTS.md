@@ -65,22 +65,22 @@ When running these tests, unless stated otherwise, enter the [control variables 
 - When you say `no` it should just leave you alone, like a nice calm gorilla.
 
 ## Control Testing Values
-Name: `Klanken Mcklanketh`
-Age: `43`
-Flight Date: Precisely 1 Year from Test Date
-Departure: `Rotorua`
-Destination: `Hamilton`
-Remaining Seats: `143`
+Name: `Klanken Mcklanketh`\
+Age: `43`\
+Flight Date: Precisely 1 Year from Test Date\
+Departure: `Rotorua`\
+Destination: `Hamilton`\
+Remaining Seats: `143`\
 Expected Cost Output: $100 (Base Rotorua-Hamilton Cost)
 
 ## Testing
 
-iteration1 = Commit ID: [c55bafeb8708a22e7767cdc4f5a81295a45ecf8e](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/c55bafeb8708a22e7767cdc4f5a81295a45ecf8e)
-iteration2 = Commit ID: [a8f1d94b3444efba5e8c4bb9dfedb3f2d96d4d4d](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/a8f1d94b3444efba5e8c4bb9dfedb3f2d96d4d4d)
-iteration3 = Commit ID: [7fb59f774cb57bfe66500f9f9b40039e68a1fc4e](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/7fb59f774cb57bfe66500f9f9b40039e68a1fc4e)
+iteration1 = Commit ID: [c55bafeb8708a22e7767cdc4f5a81295a45ecf8e](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/c55bafeb8708a22e7767cdc4f5a81295a45ecf8e)\
+iteration2 = Commit ID: [a8f1d94b3444efba5e8c4bb9dfedb3f2d96d4d4d](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/a8f1d94b3444efba5e8c4bb9dfedb3f2d96d4d4d)\
+iteration3 = Commit ID: [7fb59f774cb57bfe66500f9f9b40039e68a1fc4e](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/7fb59f774cb57bfe66500f9f9b40039e68a1fc4e)\
 iteration4 = Commit ID: [9dd4af9edb87bad7d56261512fe343c5e3adee7f](https://github.com/YouthfulRicker2/Digitech2025-Waikato-Air/commit/9dd4af9edb87bad7d56261512fe343c5e3adee7f)
 
-Success indicates that the iteration passed the test,
+Success indicates that the iteration passed the test,\
 N/A indicates that the feature wasn't implemented in that iteration.
 
 |          Test Table           | iteration1  | iteration2  | iteration3  | iteration4  |

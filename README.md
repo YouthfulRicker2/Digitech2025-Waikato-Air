@@ -6,12 +6,12 @@ This is some work for my 2025 NCEA Level 3 Digitech Class at [Wainuiomata High S
 
 ## Main Project (FlightCal)
 
-This is a program designed for use by Travel Agents who wish to provide their customers the cost of a flight through email. The program calculates the cost of the flight using the age of the customer as well as the amount of seats remaining and how close the date of the flight is, and it then provides a simple copy-pastable email for the Agent to send.
+This is a program designed for use by Travel Agents who wish to provide their customers the cost of a flight through email. The program calculates the cost of the flight using the age of the customer as well as the amount of seats remaining and how close the date of the flight is, and it then provides a simple copy-pastable email for the Agent to send.\
 To the best of my ability I have followed pep8 and pep257 styling conventions for the python language to maximize readability and convenience.
 
 ### How to Use:
 
-1. Run the [main.py](main.py) file with Python,
+1. Run the [main.py](main.py) file with Python,\
 2. Follow the instructions the program gives you until you reach your desired result.
 
 ### Requirements
@@ -90,6 +90,6 @@ It also once again prompts the user if they want to send the email now, using th
 
 ### Exit the Program
 
-...
-...
+...\
+...\
 Goodbai...
